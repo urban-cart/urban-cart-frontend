@@ -3,10 +3,12 @@ import { Layout } from "../components/Layout";
 
 export const Home = () => {
   return (
+    <div>
+
     <Layout>
-      <div>
         <ProductsList />
-      </div>
     </Layout>
+
+    </div>
   );
 };

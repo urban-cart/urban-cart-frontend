@@ -1,62 +1,60 @@
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { getProducts } from "../utils/api";
+import {useDispatch, useSelector} from 'react-redux'
+import {setPage, setCategory,  fetchProducts} from '../store/product.slice'
+import { Box } from "@mui/material";
 
-export const ProductsList = () => {
+export const ProductsList = (props) => {
+  const dispatch = useDispatch()
+  const currentPage = useSelector(state => state.product.currentPage);
+  const categoryId = useSelector(state => state.product.categoryId);  
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const ProductsPerPage = 12;
 
   useEffect(() => {
     // Calculate the offset based on the current page and number of products per page
 
-    getProducts(page, ProductsPerPage).then((data) => {
+    getProducts(currentPage, ProductsPerPage, categoryId).then((data) => {
       setProducts(data.data);
       setTotalPages(data.totalPages);
     });
-  }, [page]);
+  }, [currentPage, categoryId, dispatch]);
 
   const containerStyle = {
     display: "flex",
-    justifyContent: "left",
+    justifyContent: "flex-start",
     flexWrap: "wrap",
     width: "100%",
     height: "100vh",
     padding: "10px",
-    left: 200,
+    margin: "50px",
     // Adjust as needed
     // Add other CSS styles as needed
   };
-
-  // Calculate the total number of pages
-
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-  };
-
   return (
-    <div>
+    <div >
+      <Box sx={{ display: "flex", justifyContent:'flex-end', left:300, float:"right"}}>
       <div style={containerStyle}>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
-
-      {/* Pagination controls */}
+        </div>
+      </Box>  
       <div>
-        <button
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page === 0}
+       <button
+          onClick={() => dispatch(setPage(currentPage - 1))}
+          disabled={currentPage === 0}
         >
           Previous
         </button>
         <span>
-          Page {page + 1} of {totalPages}
+          Page {currentPage + 1} of {totalPages}
         </span>
         <button
-          onClick={() => handlePageChange(page + 1)}
-          disabled={page === totalPages - 1}
+          onClick={() => dispatch(setPage(currentPage + 1))}
+          disabled={currentPage === totalPages - 1}
         >
           Next
         </button>

@@ -6,24 +6,53 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import { useState, useEffect } from "react";
 import { getCategories } from "../utils/api";
+import {useDispatch} from 'react-redux'
+import {setCategory} from '../store/product.slice'
+import MenuIcon from '@mui/icons-material/Menu';
+import AppBar from '@mui/material/AppBar';
+import IconButton from '@mui/material/IconButton';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { styled, useTheme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 const drawerWidth = 200;
 
 export default function SideBar(props) {
+  const dispatch = useDispatch()
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [categories, setCategories] = useState([]);
+  const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  }));
 
   useEffect(() => {
     // Calculate the offset based on the current page and number of products per page
 
     getCategories().then((data) => {
-      setCategories(data.data);
+      setCategories(data);
+      console.log(data);
     });
   }, []);
 
@@ -35,73 +64,90 @@ export default function SideBar(props) {
     <div>
       <Toolbar />
       <Divider />
+
+      <Tabs
+          orientation="vertical"
+          variant="scrollable"
+          aria-label="Vertical tabs example"
+          z-index="0"
+          sx={{
+            borderRight: 1,
+            borderColor: 'divider',
+            overflowY: 'hidden' // Add this line to hide the vertical scrollbar
+          }}
+      >
+      {/* <Tab label="All" onClick={() => dispatch(setCategory(null))}/>
+      {categories.map((category) => (
+          <Tab label={category.name} onClick={() => dispatch(setCategory(category.id))}/>
+      ))} */}
       <List>
         {categories.map((category) => (
           <ListItem key={category.id} disablePadding>
-            <ListItemButton>
+            <ListItemButton  onClick={() => dispatch(setCategory(category.id))}>
               <ListItemText primary={category.name} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
+      </Tabs>
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+
+    const navbarStyle = {
+      position: "fixed",
+      top: 80,
+      right: 0,
+      height:50,
+      zIndex: 1, 
+      backgroundColor: "#19194d",
+      justifyContent: "flex-start"
+    };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box
-        component="main"
+    <Box >
+      <AppBar style={navbarStyle}>
+        <Toolbar  bg-color="gray">
+        <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            size="small"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+            bg-color="gray"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Button color="inherit">Top Deals</Button>
+          <Button color="inherit">Offers</Button>
+          </Toolbar>
+      </AppBar>
+      <Box>
+      <Drawer
         sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
         }}
+        variant="persistent"
+        anchor="left"
+        open={open}
       >
-        <Toolbar />
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        {drawer}
+        </Drawer>
       </Box>
-    </Box>
-  );
-}
+      <Box>
+        <Toolbar />
+      </Box> 
+    </Box> 
+ );};

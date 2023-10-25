@@ -1,7 +1,7 @@
 import { config } from "./config";
 import axios from "axios";
 
-async function getProducts(offset, ProductsPerPage) {
+async function getProducts(offset, ProductsPerPage,categoryId) {
   const apiUrl = config.baseURL + "products";
   console.log("apiUrl:", apiUrl);
 
@@ -10,6 +10,7 @@ async function getProducts(offset, ProductsPerPage) {
       params: {
         size: ProductsPerPage,
         page: offset,
+        categoryId: categoryId,
       },
     });
     console.log("response.data:", response.data);

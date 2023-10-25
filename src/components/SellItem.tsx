@@ -1,16 +1,20 @@
-import { Layout } from "./Layout";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import { useState } from "react";
-import { postProduct } from "../utils/api";
 
-const SellItem = () => {
+import { Container } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import MenuItem from '@mui/material/MenuItem';
+import { useEffect, useState } from "react";
+import { postProduct } from "../utils/api";
+import {getCategories} from "../utils/api";
+
+export const SellItem = () => {
   const [formData, setFormData] = useState({
     name: "Item",
     price: 0,
     quantity: 0,
     description: "Default Value",
+    categoryId: "Default Value",
   });
+  const [categories, setCategories] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -33,17 +37,20 @@ const SellItem = () => {
     }
   };
 
+  useEffect(() => {
+
+    getCategories().then((data) => {
+      setCategories(data);
+      console.log(data);
+    });
+  }, []);
+
+
   return (
-    <Layout>
       <div>
+        <Container>
         <h1>Sell Item</h1>
         <form onSubmit={handleSubmit}>
-          <Box
-            component="div"
-            sx={{
-              "& .MuiTextField-root": { m: 1, width: "25ch" },
-            }}
-          >
             <div>
               <TextField
                 required
@@ -80,13 +87,27 @@ const SellItem = () => {
                 value={formData.description}
                 onChange={handleChange}
               />
+              <TextField
+                  id="filled-select-category"
+                  select
+                  label="Select"
+                  helperText="Please select your category"
+                  variant="filled"
+                  name = "categoryId"
+                  value={formData.categoryId}
+                  onChange={handleChange}
+                >
+                  {categories.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
             </div>
             <button type="submit">Sell</button>
-          </Box>
         </form>
+        </Container>
       </div>
-    </Layout>
   );
 };
 
-export default SellItem;
