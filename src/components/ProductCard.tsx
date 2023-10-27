@@ -22,7 +22,7 @@ const ProductCard = (props: ProductCardProps) => {
   }
 
   return (
-    <Card sx={{ margin: "10px", marginColor: "yellow", maxWidth: 345 }}>
+    <Card sx={{ margin: "10px", marginColor: "yellow", maxWidth: 345, display: 'flex', flexDirection: 'column' }}>
       <CardMedia
         sx={{ maxHeight: 80 }}
         image="download.png"
@@ -39,6 +39,7 @@ const ProductCard = (props: ProductCardProps) => {
           ${props.product.price}
         </Typography>
       </CardContent>
+      <span style={{ flexGrow: 1 }} />
       <CardActions>
         <Button size="small">Buy Now</Button>
         <Button size="small">Add to Card</Button>

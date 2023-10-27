@@ -2,6 +2,7 @@ import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { SellPage } from "./pages/SellPage";
 import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
 import { Provider } from 'react-redux';
 import configureStore from './store';
 
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
+    path: "/login",
+    element: <Login />,
+  },
+  {
     path: "/about",
     element: <About />,
   },
@@ -30,7 +35,7 @@ const router = createBrowserRouter([
     path: "*",
     element: <Error />,
   },
-]);
+])
 const App = () => {
   return (
     <div>

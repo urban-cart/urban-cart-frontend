@@ -49,4 +49,18 @@ async function postProduct(product) {
   }
 }
 
-export { getProducts, getCategories, postProduct };
+async function postUser(user) {
+  const apiUrl = config.baseURL + "auth/login";
+  console.log("apiUrl:", apiUrl);
+
+  try {
+    const response = await axios.post(apiUrl, user);
+    console.log("response.data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
+export { getProducts, getCategories, postProduct, postUser };

@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
+import {useDispatch, useSelector} from 'react-redux'
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -60,7 +62,14 @@ export const NavBar = () => {
     justifyContent: "flex-start",
     backgroundColor: "#7979d2"
   };
+  const currentUser = localStorage.getItem('user');
+  console.log("current user:", currentUser);
 
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    window.location.reload();
+  }
+  
   return (
     <Slide direction="down" in={true} mountOnEnter unmountOnExit>
       <AppBar style={navbarStyle}>
@@ -90,7 +99,16 @@ export const NavBar = () => {
             <Link to="/sell-item" style={{ color: "white" }}>Sell Item</Link>
           </Button>
           <Button color="inherit">Cart</Button>
-          <Button color="inherit">Login</Button>
+          {currentUser ? (
+              <div>
+              {currentUser}
+              <Button color="inherit"  onClick={handleLogout}>Logout</Button>
+              </div>
+            ) : (
+              <Button color="inherit">
+                <Link to="/login" style={{ color: "white" }}>Login</Link>
+              </Button>
+            )}
         </Toolbar>
       </AppBar>
     </Slide>
